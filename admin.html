@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQI-Agent Dashboard</title>
+    <link rel="icon" type="image/png" href="image/air.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="admin-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .status-dot {
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-active {
+            background-color: #22c55e; /* green-500 */
+        }
+        .status-idle {
+            background-color: #6b7280; /* gray-500 */
+        }
+        .status-processing {
+            background-color: #f59e0b; /* amber-500 */
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <!-- Admin Dashboard -->
+    <div class="bg-gray-100 min-h-screen">
+        <header class="bg-white shadow-sm sticky top-0 z-50">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div class="text-xl font-bold text-gray-800">AQI-Agent Dashboard</div>
+                <div class="flex space-x-4">
+                    <a href="data-overview.html" class="text-gray-600 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-chart-line mr-1"></i>Data Overview
+                    </a>
+                    <a href="index.html" class="text-gray-600 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-home mr-1"></i>Back to Home
+                    </a>
+                </div>
+            </nav>
+        </header>
+
+        <div class="container mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Left Column: Controls & Map -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Controls -->
+                <div class="bg-white p-4 rounded-xl shadow">
+                    <h3 class="font-bold text-lg mb-4">Dashboard Controls</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="city" class="block text-sm font-medium text-gray-700">Select City</label>
+                            <select id="city" name="city" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option>JABODETABEK (Overall)</option>
+                                <option>Jakarta</option>
+                                <option selected>Bekasi</option>
+                                <option>Bogor</option>
+                                <option>Depok</option>
+                                <option>Tangerang</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="forecast" class="block text-sm font-medium text-gray-700">Forecast Period</label>
+                            <select id="forecast" name="forecast" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option>Next 24 Hours</option>
+                                <option>Next 48 Hours</option>
+                                <option>Next 72 Hours</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="pollutant" class="block text-sm font-medium text-gray-700">Primary Pollutant</label>
+                            <select id="pollutant" name="pollutant" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option>All</option>
+                                <option selected>PM2.5</option>
+                                <option>NO₂</option>
+                                <option>O₃</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Heatmap -->
+                <div class="bg-white p-4 rounded-xl shadow">
+                     <h3 class="font-bold text-lg mb-4">
+                         <i class="fas fa-map-marked-alt text-blue-600 mr-2"></i>
+                         AQI Heatmap Forecast
+                     </h3>
+                     <div id="heatmap-container" class="rounded-lg h-96 overflow-hidden">
+                         <!-- Heatmap will be dynamically generated here -->
+                     </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Info Panels -->
+            <div class="space-y-6">
+                <!-- Ask the AI -->
+                <div class="bg-white p-6 rounded-xl shadow">
+                    <h3 class="font-bold text-lg mb-4">Ask the AI for a Custom Forecast</h3>
+                    <div class="space-y-3">
+                        <textarea id="ai-prompt" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" rows="3" placeholder="e.g., What will the AQI be in South Jakarta tomorrow afternoon?">What is the forecast for Bekasi industrial area tomorrow?</textarea>
+                        <button id="generate-report-btn" onclick="generateAIReport()" class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition">Generate Report</button>
+                    </div>
+                    <div id="ai-report-output" class="mt-4 border-t pt-4 border-gray-200" style="display: none;">
+                        <!-- AI report will be injected here -->
+                    </div>
+                </div>
+                
+                <!-- Live Agent Status -->
+                <div class="bg-white p-6 rounded-xl shadow">
+                    <h3 class="font-bold text-lg mb-4">Live Agent Status</h3>
+                    <div id="agent-status-container" class="space-y-4">
+                        <div class="flex items-center">
+                            <span class="status-dot status-idle mr-3"></span>
+                            <div>
+                                <p class="font-semibold text-gray-700">Orchestrator Agent</p>
+                                <p class="text-sm text-gray-500">Status: Idle</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="status-dot status-idle mr-3"></span>
+                            <div>
+                                <p class="font-semibold text-gray-700">Data Collection Agent</p>
+                                <p class="text-sm text-gray-500">Status: Idle</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="status-dot status-idle mr-3"></span>
+                            <div>
+                                <p class="font-semibold text-gray-700">Training Agent</p>
+                                <p class="text-sm text-gray-500">Status: Idle</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="status-dot status-idle mr-3"></span>
+                            <div>
+                                <p class="font-semibold text-gray-700">Explanation Agent</p>
+                                <p class="text-sm text-gray-500">Status: Idle</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="heatmap.js"></script>
+    <script src="admin-dashboard.js"></script>
+    <!-- All JavaScript functionality has been moved to separate files for better organization -->
+    <script>
+        // Legacy compatibility - all functionality is now handled by AdminDashboard class
+        // The admin-dashboard.js file contains all the logic in an object-oriented structure
+    </script>
+
+</body>
+</html>

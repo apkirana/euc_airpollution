@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic AI for Urban Air Quality</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="image/air.png">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4" href="#">
+                <i class="fas fa-wind text-primary me-2"></i>AQI-Agent
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#map">Map</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-gradient px-4 py-2 rounded-pill ms-2" href="admin.html">
+                            <i class="fas fa-chart-line me-1"></i>Dashboard
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-3 fw-bold text-white mb-4">
+                        AI-Powered <span class="text-warning">Air Quality</span> Forecasting
+                    </h1>
+                    <p class="lead text-white-50 mb-4">
+                        Advanced agentic AI system delivering accurate, real-time air quality predictions 
+                        to support climate-resilient urban planning in JABODETABEK region.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="admin.html" class="btn btn-light btn-lg px-4 py-3 rounded-pill">
+                            <i class="fas fa-chart-area me-2"></i>View Live Forecast
+                        </a>
+                        <a href="#features" class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill">
+                            <i class="fas fa-info-circle me-2"></i>Learn More
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="text-center">
+                        <img src="https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?q=80&w=1000&auto=format&fit=crop" 
+                             alt="Air Quality Monitoring" class="img-fluid rounded-4 shadow-lg" 
+                             style="max-height: 400px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title display-4 fw-bold">System Features</h2>
+                <p class="lead text-muted">Comprehensive AI-driven air quality monitoring and prediction</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                                <i class="fas fa-database fa-2x text-primary"></i>
+                            </div>
+                            <h4 class="card-title fw-bold mb-3">Data Collection</h4>
+                            <p class="card-text text-muted">Automatically gathers and processes data from diverse sources like Google Earth Engine and IQAir, ensuring reliable foundation for analysis.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                                <i class="fas fa-brain fa-2x text-success"></i>
+                            </div>
+                            <h4 class="card-title fw-bold mb-3">LSTM Forecasting</h4>
+                            <p class="card-text text-muted">Advanced Long Short-Term Memory neural networks provide high-accuracy AQI forecasts up to 72 hours in advance.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                                <i class="fas fa-comments fa-2x text-warning"></i>
+                            </div>
+                            <h4 class="card-title fw-bold mb-3">Natural Language Reports</h4>
+                            <p class="card-text text-muted">AI explanation agent translates complex data into clear, actionable reports for policymakers and the public.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Map Section -->
+    <section id="map" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title display-4 fw-bold">JABODETABEK Air Quality Map</h2>
+                <p class="lead text-muted">Real-time air quality visualization across the Greater Jakarta area</p>
+            </div>
+            
+            <div class="map-container">
+                <div class="map-overlay">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-map-marker-alt text-primary me-2"></i>Live AQI Status</h5>
+                    <div class="aqi-legend">
+                        <div class="aqi-item">
+                            <div class="aqi-color" style="background-color: #00e400;"></div>
+                            <span>Good (0-50)</span>
+                        </div>
+                        <div class="aqi-item">
+                            <div class="aqi-color" style="background-color: #ffff00;"></div>
+                            <span>Moderate (51-100)</span>
+                        </div>
+                        <div class="aqi-item">
+                            <div class="aqi-color" style="background-color: #ff7e00;"></div>
+                            <span>Unhealthy for Sensitive (101-150)</span>
+                        </div>
+                        <div class="aqi-item">
+                            <div class="aqi-color" style="background-color: #ff0000;"></div>
+                            <span>Unhealthy (151-200)</span>
+                        </div>
+                        <div class="aqi-item">
+                            <div class="aqi-color" style="background-color: #8f3f97;"></div>
+                            <span>Very Unhealthy (201-300)</span>
+                        </div>
+                        <div class="aqi-item">
+                            <div class="aqi-color" style="background-color: #7e0023;"></div>
+                            <span>Hazardous (300+)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="position-relative">
+                            <div id="aqiMap" class="rounded-3 shadow" style="height: 400px; width: 100%;"></div>
+                            <div class="position-absolute top-0 end-0 m-3" style="z-index: 1000;">
+                                <span class="badge bg-primary fs-6 px-3 py-2">
+                                    <i class="fas fa-satellite me-1"></i>Live Interactive Map
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="bg-white rounded-3 shadow p-4 h-100">
+                            <h5 class="fw-bold mb-4"><i class="fas fa-city text-primary me-2"></i>Key Cities Status</h5>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-medium">Jakarta Central</span>
+                                    <span class="badge bg-warning">AQI 87</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" style="width: 58%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-medium">Bekasi</span>
+                                    <span class="badge bg-danger">AQI 165</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-danger" style="width: 82%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-medium">Bogor</span>
+                                    <span class="badge bg-success">AQI 45</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" style="width: 30%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-medium">Tangerang</span>
+                                    <span class="badge bg-warning">AQI 92</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" style="width: 61%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-medium">Depok</span>
+                                    <span class="badge bg-warning">AQI 78</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" style="width: 52%"></div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <a href="admin.html" class="btn btn-gradient btn-sm px-4">
+                                    <i class="fas fa-chart-line me-1"></i>View Detailed Analytics
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+                
+    <!-- About Section -->
+    <section id="about" class="py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="text-center mb-4 mb-lg-0">
+                        <h2 class="section-title display-4 fw-bold">About AQI-Agent</h2>
+                        <p class="lead text-muted mb-4">
+                            Advanced multi-agent AI system designed for environmental monitoring and air quality forecasting in the JABODETABEK metropolitan area.
+                        </p>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 60px; height: 60px;">
+                                    <i class="fas fa-users fa-lg text-primary"></i>
+                                </div>
+                                <h6 class="fw-bold">4 AI Agents</h6>
+                                <small class="text-muted">Working Together</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 60px; height: 60px;">
+                                    <i class="fas fa-clock fa-lg text-success"></i>
+                                </div>
+                                <h6 class="fw-bold">72 Hours</h6>
+                                <small class="text-muted">Forecast Range</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 60px; height: 60px;">
+                                    <i class="fas fa-percentage fa-lg text-warning"></i>
+                                </div>
+                                <h6 class="fw-bold">88% Accuracy</h6>
+                                <small class="text-muted">Prediction Rate</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="bg-white rounded-4 shadow p-4">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-lightbulb text-warning me-2"></i>Key Innovation</h5>
+                        <p class="text-muted mb-4">
+                            AQI-Agent represents a breakthrough in environmental monitoring technology, combining cutting-edge machine learning with real-time data processing to deliver unprecedented accuracy in air quality forecasting for urban planning and public health protection.
+                        </p>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <small>Real-time Processing</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <small>Multi-source Data</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <small>LSTM Neural Networks</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <small>Natural Language AI</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Project Section -->
+    <section class="py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold text-white mb-3">
+                    <i class="fas fa-trophy text-warning me-3"></i>
+                    About The Project
+                </h2>
+                <div class="badge bg-warning text-dark px-4 py-2 fs-5 mb-4">
+                    <i class="fas fa-medal me-2"></i>
+                    European Universities' Competition Entry
+                </div>
+            </div>
+            
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <div class="text-white">
+                        <p class="lead mb-4">
+                            This project is an entry for the <strong>European Universities' Competition on Artificial Intelligence</strong>, 
+                            focused on AI and Climate Change Solutions. Our mission is to leverage agentic AI to provide an autonomous, 
+                            explainable, and scalable solution for air quality forecasting.
+                        </p>
+                        <p class="mb-4">
+                            By focusing on the JABODETABEK region, we aim to create a powerful tool that can aid urban planning 
+                            and improve public health outcomes in one of the world's most dynamic urban areas.
+                        </p>
+                        
+                        <div class="row text-center mt-5">
+                            <div class="col-md-4 mb-4">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <i class="fas fa-globe-asia fa-3x text-warning"></i>
+                                </div>
+                                <h5 class="fw-bold text-white">Climate Solutions</h5>
+                                <p class="text-white-50 small">AI for Environmental Impact</p>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <i class="fas fa-city fa-3x text-warning"></i>
+                                </div>
+                                <h5 class="fw-bold text-white">Urban Planning</h5>
+                                <p class="text-white-50 small">JABODETABEK Focus</p>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <i class="fas fa-heart fa-3x text-warning"></i>
+                                </div>
+                                <h5 class="fw-bold text-white">Public Health</h5>
+                                <p class="text-white-50 small">Community Wellbeing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="text-center">
+                        <div class="bg-white bg-opacity-10 rounded-4 p-4">
+                            <i class="fas fa-university fa-4x text-warning mb-4"></i>
+                            <h4 class="fw-bold text-white mb-3">Academic Research</h4>
+                            <p class="text-white-50 mb-4">
+                                Contributing to the advancement of AI applications in environmental monitoring and climate change mitigation.
+                            </p>
+                            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                <span class="badge bg-light text-dark px-3 py-2">Artificial Intelligence</span>
+                                <span class="badge bg-light text-dark px-3 py-2">Climate Change</span>
+                                <span class="badge bg-light text-dark px-3 py-2">Research</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-wind text-primary me-2 fs-4"></i>
+                        <span class="fw-bold">AQI-Agent</span>
+                    </div>
+                    <small class="text-muted">Advanced AI for cleaner cities</small>
+                </div>
+                <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                    <small>&copy; 2025 AQI-Agent Project Team. All rights reserved.</small>
+                    <div class="mt-2">
+                        <a href="#" class="text-muted me-3"><i class="fab fa-github"></i></a>
+                        <a href="#" class="text-muted me-3"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-muted"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar background change on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow');
+            } else {
+                navbar.classList.remove('shadow');
+            }
+        });
+
+        // Initialize Interactive AQI Map
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize map centered on Jakarta
+            const map = L.map('aqiMap').setView([-6.2088, 106.8456], 10);
+
+            // Add OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // AQI data for JABODETABEK cities
+            const aqiData = [
+                {
+                    name: 'Jakarta Central',
+                    lat: -6.1751,
+                    lng: 106.8650,
+                    aqi: 87,
+                    status: 'Moderate',
+                    color: '#ffff00',
+                    pollutant: 'PM2.5'
+                },
+                {
+                    name: 'Bekasi',
+                    lat: -6.2383,
+                    lng: 106.9756,
+                    aqi: 165,
+                    status: 'Unhealthy',
+                    color: '#ff0000',
+                    pollutant: 'NO₂'
+                },
+                {
+                    name: 'Bogor',
+                    lat: -6.5971,
+                    lng: 106.8060,
+                    aqi: 45,
+                    status: 'Good',
+                    color: '#00e400',
+                    pollutant: 'O₃'
+                },
+                {
+                    name: 'Tangerang',
+                    lat: -6.1783,
+                    lng: 106.6319,
+                    aqi: 92,
+                    status: 'Moderate',
+                    color: '#ffff00',
+                    pollutant: 'PM2.5'
+                },
+                {
+                    name: 'Depok',
+                    lat: -6.4025,
+                    lng: 106.7942,
+                    aqi: 78,
+                    status: 'Moderate',
+                    color: '#ffff00',
+                    pollutant: 'PM10'
+                }
+            ];
+
+            // Add AQI markers to the map
+            aqiData.forEach(function(city) {
+                // Create custom icon based on AQI level
+                const icon = L.divIcon({
+                    className: 'aqi-marker',
+                    html: `<div style="background-color: ${city.color}; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; color: ${city.aqi > 100 ? 'white' : 'black'}; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">${city.aqi}</div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+
+                // Create marker with popup
+                const marker = L.marker([city.lat, city.lng], { icon: icon }).addTo(map);
+                
+                // Create detailed popup content
+                const popupContent = `
+                    <div style="min-width: 200px;">
+                        <h6 style="margin: 0 0 10px 0; color: #333; font-weight: bold;">
+                            <i class="fas fa-map-marker-alt" style="color: ${city.color}; margin-right: 5px;"></i>
+                            ${city.name}
+                        </h6>
+                        <div style="margin-bottom: 8px;">
+                            <strong>AQI:</strong> 
+                            <span style="background-color: ${city.color}; color: ${city.aqi > 100 ? 'white' : 'black'}; padding: 2px 8px; border-radius: 12px; font-weight: bold;">
+                                ${city.aqi}
+                            </span>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <strong>Status:</strong> <span style="color: ${city.color === '#00e400' ? '#00a000' : city.color === '#ff0000' ? '#cc0000' : '#cc8800'};">${city.status}</span>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <strong>Primary Pollutant:</strong> ${city.pollutant}
+                        </div>
+                        <div style="font-size: 11px; color: #666; margin-top: 10px;">
+                            <i class="fas fa-clock"></i> Updated: ${new Date().toLocaleTimeString()}
+                        </div>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+                
+                // Add hover effect
+                marker.on('mouseover', function() {
+                    this.openPopup();
+                });
+            });
+
+            // Add a circle overlay to show the general JABODETABEK area
+            L.circle([-6.2088, 106.8456], {
+                color: '#667eea',
+                fillColor: '#667eea',
+                fillOpacity: 0.1,
+                radius: 25000
+            }).addTo(map).bindPopup('<strong>JABODETABEK Metropolitan Area</strong><br>Greater Jakarta Region');
+
+            // Add map controls
+            L.control.scale().addTo(map);
+            
+            // Add custom legend control
+            const legend = L.control({position: 'bottomright'});
+            legend.onAdd = function(map) {
+                const div = L.DomUtil.create('div', 'legend');
+                div.innerHTML = `
+                    <div style="background: rgba(255,255,255,0.9); padding: 10px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); font-size: 12px;">
+                        <h6 style="margin: 0 0 8px 0; font-weight: bold;">AQI Legend</h6>
+                        <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                            <div style="width: 16px; height: 16px; background-color: #00e400; border-radius: 50%; margin-right: 6px;"></div>
+                            <span>Good (0-50)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                            <div style="width: 16px; height: 16px; background-color: #ffff00; border-radius: 50%; margin-right: 6px;"></div>
+                            <span>Moderate (51-100)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                            <div style="width: 16px; height: 16px; background-color: #ff7e00; border-radius: 50%; margin-right: 6px;"></div>
+                            <span>Unhealthy for Sensitive (101-150)</span>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 16px; height: 16px; background-color: #ff0000; border-radius: 50%; margin-right: 6px;"></div>
+                            <span>Unhealthy (151-200)</span>
+                        </div>
+                    </div>
+                `;
+                return div;
+            };
+            legend.addTo(map);
+        });
+    </script>
+
+</body>
+</html>

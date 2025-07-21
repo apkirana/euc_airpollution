@@ -1,0 +1,195 @@
+/* AQI-Agent Admin Dashboard Styles */
+
+body {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+}
+
+.status-dot {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-active {
+    background-color: #22c55e; /* green-500 */
+}
+
+.status-idle {
+    background-color: #6b7280; /* gray-500 */
+}
+
+.status-processing {
+    background-color: #f59e0b; /* amber-500 */
+}
+
+/* Heatmap Container Styles */
+.heatmap-container {
+    position: relative;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 400px;
+}
+
+.heatmap-controls {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+}
+
+.heatmap-control-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.heatmap-control-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.heatmap-control-btn.active {
+    background: #3b82f6;
+    color: white;
+}
+
+.heatmap-legend {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 12px;
+    z-index: 1000;
+}
+
+.heatmap-legend h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.heatmap-info {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 12px;
+    z-index: 1000;
+    max-width: 200px;
+}
+
+.heatmap-info h4 {
+    margin: 0 0 6px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.heatmap-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    grid-template-rows: repeat(15, 1fr);
+    gap: 1px;
+    padding: 20px;
+}
+
+.heatmap-cell {
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.1);
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.heatmap-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1001;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.heatmap-tooltip.show {
+    opacity: 1;
+}
+
+/* Animation for heatmap updates */
+@keyframes heatmapPulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+.heatmap-cell.updating {
+    animation: heatmapPulse 1s ease-in-out infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .heatmap-controls {
+        top: 10px;
+        right: 10px;
+        flex-direction: column;
+    }
+    
+    .heatmap-legend,
+    .heatmap-info {
+        position: relative;
+        margin-bottom: 10px;
+    }
+    
+    .heatmap-grid {
+        grid-template-columns: repeat(15, 1fr);
+        grid-template-rows: repeat(12, 1fr);
+        padding: 15px;
+    }
+}

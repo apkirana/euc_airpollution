@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Overview - AQI-Agent</title>
+    <link rel="icon" type="image/png" href="image/air.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .level-good { background-color: #22c55e; }
+        .level-moderate { background-color: #eab308; }
+        .level-unhealthy-sensitive { background-color: #f97316; }
+        .level-unhealthy { background-color: #ef4444; }
+        .level-very-unhealthy { background-color: #991b1b; }
+        .level-hazardous { background-color: #7c2d12; }
+        
+        .filter-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .data-table {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .loading {
+            display: none;
+        }
+        
+        .no-data {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold text-gray-800">
+                <i class="fas fa-chart-line text-indigo-600 mr-2"></i>
+                Data Overview
+            </div>
+            <div class="flex space-x-4">
+                <a href="admin.html" class="text-gray-600 hover:text-indigo-600 transition-colors">
+                    <i class="fas fa-tachometer-alt mr-1"></i>Dashboard
+                </a>
+                <a href="index.html" class="text-gray-600 hover:text-indigo-600 transition-colors">
+                    <i class="fas fa-home mr-1"></i>Home
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mx-auto p-4 md:p-6">
+        <!-- Filter Section -->
+        <div class="filter-section text-white p-6 rounded-xl shadow-lg mb-6">
+            <h2 class="text-2xl font-bold mb-4">
+                <i class="fas fa-filter mr-2"></i>
+                Filter JABODETABEK Air Quality Data
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Region Filter -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Region</label>
+                    <select id="regionFilter" class="w-full p-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-white">
+                        <option value="">All Regions</option>
+                        <option value="Jakarta">Jakarta</option>
+                        <option value="Bogor">Bogor</option>
+                        <option value="Depok">Depok</option>
+                        <option value="Tangerang">Tangerang</option>
+                        <option value="Bekasi">Bekasi</option>
+                    </select>
+                </div>
+                
+                <!-- Station Filter -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">Station</label>
+                    <select id="stationFilter" class="w-full p-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-white">
+                        <option value="">All Stations</option>
+                    </select>
+                </div>
+                
+                <!-- Date Range -->
+                <div>
+                    <label class="block text-sm font-medium mb-2">From Date</label>
+                    <input type="date" id="fromDate" class="w-full p-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-white">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">To Date</label>
+                    <input type="date" id="toDate" class="w-full p-3 rounded-lg text-gray-800 border-0 focus:ring-2 focus:ring-white">
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center mt-4">
+                <button id="applyFilter" class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-search mr-2"></i>Apply Filters
+                </button>
+                <button id="clearFilter" class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-indigo-600 transition-colors">
+                    <i class="fas fa-times mr-2"></i>Clear All
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-xl shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Total Records</p>
+                        <p id="totalRecords" class="text-2xl font-bold text-gray-800">0</p>
+                    </div>
+                    <i class="fas fa-database text-3xl text-blue-500"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded-xl shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Avg AQI</p>
+                        <p id="avgAQI" class="text-2xl font-bold text-gray-800">0</p>
+                    </div>
+                    <i class="fas fa-chart-bar text-3xl text-green-500"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded-xl shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Worst Level</p>
+                        <p id="worstLevel" class="text-sm font-bold text-red-600">-</p>
+                    </div>
+                    <i class="fas fa-exclamation-triangle text-3xl text-red-500"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded-xl shadow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Date Range</p>
+                        <p id="dateRange" class="text-sm font-bold text-gray-800">-</p>
+                    </div>
+                    <i class="fas fa-calendar text-3xl text-purple-500"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="p-4 bg-gray-50 border-b">
+                <h3 class="text-lg font-semibold text-gray-800">
+                    <i class="fas fa-table mr-2"></i>
+                    Air Quality Data
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">Real-time air quality measurements from JABODETABEK monitoring stations</p>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="loading" class="loading p-8 text-center">
+                <i class="fas fa-spinner fa-spin text-3xl text-indigo-600 mb-4"></i>
+                <p class="text-gray-600">Loading data...</p>
+            </div>
+            
+            <!-- No Data State -->
+            <div id="noData" class="no-data p-8 text-center">
+                <i class="fas fa-search text-3xl text-gray-400 mb-4"></i>
+                <p class="text-gray-600">No data found matching your filters</p>
+            </div>
+            
+            <!-- Data Table -->
+            <div class="data-table">
+                <table class="w-full">
+                    <thead class="bg-gray-100 sticky top-0">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Station</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PM10</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PM2.5</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NO2</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">O3</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SO2</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Max AQI</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Export Section -->
+        <div class="mt-6 flex justify-end space-x-4">
+            <button id="exportCSV" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                <i class="fas fa-download mr-2"></i>Export CSV
+            </button>
+            <button id="exportJSON" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                <i class="fas fa-file-code mr-2"></i>Export JSON
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let allData = [];
+        let filteredData = [];
+        
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            setupEventListeners();
+        });
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('regionFilter').addEventListener('change', updateStationFilter);
+            document.getElementById('applyFilter').addEventListener('click', applyFilters);
+            document.getElementById('clearFilter').addEventListener('click', clearFilters);
+            document.getElementById('exportCSV').addEventListener('click', exportToCSV);
+            document.getElementById('exportJSON').addEventListener('click', exportToJSON);
+        }
+        
+        // Load data from file
+        async function loadData() {
+            showLoading(true);
+            try {
+                const response = await fetch('data/datajabodetabek.txt');
+                const text = await response.text();
+                parseData(text);
+                populateFilters();
+                applyFilters();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showNoData(true);
+            }
+            showLoading(false);
+        }
+        
+        // Parse the data file
+        function parseData(text) {
+            const lines = text.split('\n').filter(line => line.trim());
+            allData = [];
+            
+            lines.forEach((line, index) => {
+                if (index === 0) return; // Skip header
+                
+                // Parse the tuple format
+                const match = line.match(/\('([^']+)',\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*'([^']+)',\s*'([^']+)'\)/);
+                if (match) {
+                    allData.push({
+                        date: match[1],
+                        pm10: parseInt(match[2]),
+                        pm25: parseInt(match[3]),
+                        no2: parseInt(match[4]),
+                        o3: parseInt(match[5]),
+                        so2: parseInt(match[6]),
+                        maxValue: parseInt(match[7]),
+                        location: match[8],
+                        level: match[9]
+                    });
+                }
+            });
+        }
+        
+        // Populate filter dropdowns
+        function populateFilters() {
+            const stations = [...new Set(allData.map(item => item.location))].sort();
+            const stationFilter = document.getElementById('stationFilter');
+            
+            stationFilter.innerHTML = '<option value="">All Stations</option>';
+            stations.forEach(station => {
+                stationFilter.innerHTML += `<option value="${station}">${station}</option>`;
+            });
+            
+            // Set date range
+            const dates = allData.map(item => item.date).sort();
+            if (dates.length > 0) {
+                document.getElementById('fromDate').value = dates[0];
+                document.getElementById('toDate').value = dates[dates.length - 1];
+            }
+        }
+        
+        // Update station filter based on region
+        function updateStationFilter() {
+            const region = document.getElementById('regionFilter').value;
+            const stationFilter = document.getElementById('stationFilter');
+            
+            let stations = [...new Set(allData.map(item => item.location))];
+            
+            if (region) {
+                stations = stations.filter(station => station.toLowerCase().includes(region.toLowerCase()));
+            }
+            
+            stationFilter.innerHTML = '<option value="">All Stations</option>';
+            stations.sort().forEach(station => {
+                stationFilter.innerHTML += `<option value="${station}">${station}</option>`;
+            });
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const region = document.getElementById('regionFilter').value;
+            const station = document.getElementById('stationFilter').value;
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            
+            filteredData = allData.filter(item => {
+                let matches = true;
+                
+                if (region && !item.location.toLowerCase().includes(region.toLowerCase())) {
+                    matches = false;
+                }
+                
+                if (station && item.location !== station) {
+                    matches = false;
+                }
+                
+                if (fromDate && item.date < fromDate) {
+                    matches = false;
+                }
+                
+                if (toDate && item.date > toDate) {
+                    matches = false;
+                }
+                
+                return matches;
+            });
+            
+            updateStatistics();
+            renderTable();
+        }
+        
+        // Clear all filters
+        function clearFilters() {
+            document.getElementById('regionFilter').value = '';
+            document.getElementById('stationFilter').value = '';
+            document.getElementById('fromDate').value = '';
+            document.getElementById('toDate').value = '';
+            
+            populateFilters();
+            applyFilters();
+        }
+        
+        // Update statistics
+        function updateStatistics() {
+            const totalRecords = filteredData.length;
+            const avgAQI = totalRecords > 0 ? Math.round(filteredData.reduce((sum, item) => sum + item.maxValue, 0) / totalRecords) : 0;
+            
+            const levelPriority = {
+                'Good': 1,
+                'Moderate': 2,
+                'Unhealthy for Sensitive Groups': 3,
+                'Unhealthy': 4,
+                'Very Unhealthy': 5,
+                'Hazardous': 6
+            };
+            
+            const worstLevel = filteredData.reduce((worst, item) => {
+                return (levelPriority[item.level] || 0) > (levelPriority[worst] || 0) ? item.level : worst;
+            }, 'Good');
+            
+            const dates = filteredData.map(item => item.date).sort();
+            const dateRange = dates.length > 0 ? `${dates[0]} to ${dates[dates.length - 1]}` : '-';
+            
+            document.getElementById('totalRecords').textContent = totalRecords;
+            document.getElementById('avgAQI').textContent = avgAQI;
+            document.getElementById('worstLevel').textContent = worstLevel;
+            document.getElementById('dateRange').textContent = dateRange;
+        }
+        
+        // Render data table
+        function renderTable() {
+            const tbody = document.getElementById('dataTableBody');
+            
+            if (filteredData.length === 0) {
+                showNoData(true);
+                tbody.innerHTML = '';
+                return;
+            }
+            
+            showNoData(false);
+            
+            tbody.innerHTML = filteredData.map(item => {
+                const levelClass = getLevelClass(item.level);
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-sm text-gray-900">${item.date}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900">${item.location}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900">${item.pm10}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900">${item.pm25}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900">${item.no2}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900">${item.o3}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900">${item.so2}</td>
+                        <td class="px-4 py-3 text-sm font-semibold text-gray-900">${item.maxValue}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full text-white ${levelClass}">
+                                ${item.level}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // Get CSS class for air quality level
+        function getLevelClass(level) {
+            const levelMap = {
+                'Good': 'level-good',
+                'Moderate': 'level-moderate',
+                'Unhealthy for Sensitive Groups': 'level-unhealthy-sensitive',
+                'Unhealthy': 'level-unhealthy',
+                'Very Unhealthy': 'level-very-unhealthy',
+                'Hazardous': 'level-hazardous'
+            };
+            return levelMap[level] || 'bg-gray-500';
+        }
+        
+        // Show/hide loading state
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+        
+        // Show/hide no data state
+        function showNoData(show) {
+            document.getElementById('noData').style.display = show ? 'block' : 'none';
+        }
+        
+        // Export to CSV
+        function exportToCSV() {
+            if (filteredData.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            const headers = ['Date', 'Station', 'PM10', 'PM2.5', 'NO2', 'O3', 'SO2', 'Max AQI', 'Level'];
+            const csvContent = [
+                headers.join(','),
+                ...filteredData.map(item => [
+                    item.date,
+                    `"${item.location}"`,
+                    item.pm10,
+                    item.pm25,
+                    item.no2,
+                    item.o3,
+                    item.so2,
+                    item.maxValue,
+                    `"${item.level}"`
+                ].join(','))
+            ].join('\n');
+            
+            downloadFile(csvContent, 'aqi-data.csv', 'text/csv');
+        }
+        
+        // Export to JSON
+        function exportToJSON() {
+            if (filteredData.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            const jsonContent = JSON.stringify(filteredData, null, 2);
+            downloadFile(jsonContent, 'aqi-data.json', 'application/json');
+        }
+        
+        // Download file
+        function downloadFile(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
