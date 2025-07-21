@@ -58,13 +58,25 @@ _Figure 2: A mockup of the interactive web dashboard._
     
 - **Frontend:** HTML, CSS (Tailwind), JavaScript
 
-## 6. Project Team
+## 6. Live Demo
+The prototype of our web dashboard is hosted on GitHub Pages. You can access the live website here:
 
-- Annisa Puspa Kirana
-    
-- Tong Jiang
-    
-- Senyang Li
+https://apkirana.github.io/euc_airpollution/
+
+6. Technology Stack
+Backend & AI: Python
+
+Machine Learning: PyTorch / TensorFlow (for LSTM)
+
+Agentic AI Framework: LangChain / Custom Implementation
+
+Data Sources: Google Earth Engine (GEE), IQAir API, AQICN.org
+
+Data Quality: openclean-core
+
+Frontend: HTML, CSS (Tailwind), JavaScript
+
+
 
 ## 7. Getting Started
 
@@ -96,6 +108,6 @@ Open your web browser and go to http://localhost:5000 to interact with the dashb
 ## 8. License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-##9. Acknowledgments
+## . Acknowledgments
 We would like to thank our mentors and professors for their guidance throughout this project. Your support has been invaluable!
 For any questions, please feel free to raise an issue in this repository or contact the project team directly.
